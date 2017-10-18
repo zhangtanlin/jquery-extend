@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Title</title>
+  <style type="text/css">
+    #bucketBox{width: 100%;height: 340px;min-height: 340px;border: 1px solid #D5D5D5;border-radius: 3px;box-shadow: 0 0 3px #d5d5d5;}
+
+    /*头部*/
+    .bucketBoxHeader{height: 39px;line-height: 39px;color:#636363;border-bottom: 1px solid #ccc;background:#F1F1F1;text-align: center;font-size: 12px;font-weight: bold;}
+
+    /*中部*/
+    .bucketBoxContent{position: relative;zoom: 1;height:300px;padding-left: 15px;}
+    .bucketBoxContent:after{content: "";clear: both;}
+    .listBox{float: left;margin-right: 15px;}
+    .bucketFaliaoTotal,
+    .bucketTiaojiTotal,
+    .bucketCaigouTotal{padding:0;margin:0;font-weight: bold;font-size: 12px;text-align: center;display: block;height: 40px;line-height: 40px;overflow:hidden;text-overflow:ellipsis;cursor: pointer;}
+    .bucketFaliaoTotal{color: #70B517;}
+    .bucketTiaojiTotal{color: #EA7854;}
+    .bucketCaigouTotal{color: #11B4FF;}
+
+    .bucketFaliao,
+    .bucketTiaoji,
+    .bucketCaigou{height: 220px;background: #DADEE3;border-radius: 5px;position: relative;overflow: hidden;}
+    .bucketFaliaoFinish,
+    .bucketTiaojiFinish,
+    .bucketCaigouFinish{position: absolute;bottom: 0;left: 0;font-size: 12px;text-align: center;cursor: pointer;}
+    .bucketFaliaoFinishPercent,
+    .bucketTiaojiFinishPercent,
+    .bucketCaigouFinishPercent{margin:0;padding:0;display: block;height: 15px;line-height: 15px;}
+
+    .bucketFaliaoFinish{background: #70B517;}
+    .bucketTiaojiFinish{background: #EA7854;}
+    .bucketCaigouFinish{background: #11B4FF;}
+
+    /*底部*/
+    .bucketFaliaoPercent,
+    .bucketTiaojiPercent,
+    .bucketCaigouPercent{padding:0;margin:0;display:block;height: 40px;line-height: 40px;text-align: center;font-size: 12px;color: #9D9D9D;font-weight: lighter;overflow:hidden;text-overflow:ellipsis;cursor: pointer;}
+  </style>
+  <script type="text/javascript" src="jquery.min.js"></script>
+</head>
+<body>
+  <!--面板-->
+  <div id="bucketBox">
+    <!--面板头部-->
+    <div class="bucketBoxHeader"></div>
+    <!--面板内容-->
+    <div class="bucketBoxContent">
+
+      <!--发料-->
+      <div class="listBox" id="bucketFaliaoBox">
+
+        <p class="bucketFaliaoTotal">发&nbsp;&nbsp;料&nbsp;&nbsp;器材数量<span></span></p>
+        <div class="bucketFaliao">
+          <!--发料已完成盒子-->
+          <div class="bucketFaliaoFinish">
+            <p class="bucketFaliaoFinishPercent">已完成<span></span></p>
+          </div>
+        </div>
+        <p class="bucketFaliaoPercent"></p>
+      </div>
+
+      <!--调剂-->
+      <div class="listBox" id="bucketTiaojiBox">
+        <p class="bucketTiaojiTotal" title="调剂器材数量">调&nbsp;&nbsp;剂&nbsp;&nbsp;器材数量<span></span></p>
+        <div class="bucketTiaoji">
+          <!--调剂已完成盒子-->
+          <div class="bucketTiaojiFinish">
+            <p class="bucketTiaojiFinishPercent">已完成<span></span></p>
+          </div>
+        </div>
+        <p class="bucketTiaojiPercent"></p>
+      </div>
+
+      <!--采购-->
+      <div class="listBox" id="bucketCaigouBox">
+        <p class="bucketCaigouTotal">采&nbsp;&nbsp;购&nbsp;&nbsp;器材数量<span></span></p>
+        <div class="bucketCaigou">
+          <!--采购已完成盒子-->
+          <div class="bucketCaigouFinish">
+            <p class="bucketCaigouFinishPercent">已完成<span></span></p>
+          </div>
+        </div>
+        <p class="bucketCaigouPercent"></p>
+      </div>
+
+    </div>
+  </div>
+
+
+  <script type="text/javascript">
+    $(document).ready(function () {
+      $.getJSON("data.json",function(data){
+        //设置头部数据展示
+        $(".bucketBoxHeader").html("申请器材数量" + data[0].sq + "/审批器材数量" + data[0].sp);
+
+        //获取内容区盒子宽度
+        var contentWidth = $(".bucketBoxContent").width();
+        //获取内容区盒子高度
+        var contentHeight = $(".listBox").height() - 30;
+        console.log(contentWidth,contentHeight);
+
+        //设置发料和发料已完成以及底部百分比宽度
+        $("#bucketFaliaoBox,.bucketFaliaoFinish,.bucketFaliaoPercent").css("width",(contentWidth * data[4].fl / 100) - 15 + "px");
+        //设置调剂和调剂已完成以及底部百分比宽度
+        $("#bucketTiaojiBox,.bucketTiaojiFinish,.bucketTiaojiPercent").css("width",(contentWidth * data[4].tj / 100) - 15 + "px");
+        //设置采购和采购已完成以及底部百分比宽度
+        $("#bucketCaigouBox,.bucketCaigouFinish,.bucketCaigouPercent").css("width",(contentWidth * data[4].cg / 100) - 15 + "px");
+
+        //设置发料总数
+        $(".bucketFaliaoTotal span").html(data[1].flz);
+        $(".bucketFaliaoTotal").attr("title","发料器材数量" + data[1].flz)
+        //设置调剂总数
+        $(".bucketTiaojiTotal span").html(data[2].tjz);
+        $(".bucketTiaojiTotal").attr("title","调剂器材数量" + data[2].tjz);
+        //设置采购总数
+        $(".bucketCaigouTotal span").html(data[3].cgz);
+        $(".bucketCaigouTotal").attr("title","采购器材数量" + data[3].cgz);
+
+        //设置发料已完成高度
+        $(".bucketFaliaoFinish").css("height",(contentHeight * data[1].wc / 100) + "px");
+        $(".bucketFaliaoFinish").attr("title", "已完成" + data[1].wc + "%");
+        //设置发料已完成百分比显示
+        $(".bucketFaliaoFinishPercent span").html(data[1].wc + "%");
+        if(data[1].wc <= 5){
+          $(".bucketFaliaoFinishPercent").css({"position":"relative","top":"-15px"});
+        }
+
+        //设置调剂已完成高度和title
+        $(".bucketTiaojiFinish").css("height",(contentHeight * data[2].wc / 100) + "px");
+        $(".bucketTiaojiFinish").attr("title","已完成" + data[2].wc + "%");
+        //设置调剂已完成百分比显示
+        $(".bucketTiaojiFinishPercent span").html(data[2].wc + "%");
+        if(data[2].wc <= 5){
+          $(".bucketTiaojiFinishPercent").css({"position":"relative","top":"-15px"});
+        }
+
+        //设置采购已完成高度
+        $(".bucketCaigouFinish").css("height",(contentHeight * data[3].wc / 100) + "px");
+        $(".bucketCaigouFinish").attr("title","已完成" + data[3].wc + "%");
+        //设置采购已完成百分比显示
+        $(".bucketCaigouFinishPercent span").html(data[3].wc + "%");
+        if(data[3].wc <= 5){
+          $(".bucketCaigouFinishPercent").css({"position":"relative","top":"-15px"});
+        }
+
+        //底部发料设置百分比显示
+        $(".bucketFaliaoPercent").html("发料占审批数量" + data[4].fl + "%");
+        $(".bucketFaliaoPercent").attr("title","发料占审批数量" + data[4].fl + "%");
+        //底部调剂设置百分比显示
+        $(".bucketTiaojiPercent").html("调剂占审批数量" + data[4].tj + "%");
+        $(".bucketTiaojiPercent").attr("title","调剂占审批数量" + data[4].tj + "%");
+        //底部采购设置百分比显示
+        $(".bucketCaigouPercent").html("采购占审批数量" + data[4].cg + "%");
+        $(".bucketCaigouPercent").attr("title","采购占审批数量" + data[4].cg + "%");
+
+      });
+    });
+  </script>
+</body>
+</html>
