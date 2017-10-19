@@ -28,7 +28,7 @@
     .bucketCaigouFinish{position: absolute;bottom: 0;left: 0;font-size: 12px;text-align: center;cursor: pointer;}
     .bucketFaliaoFinishPercent,
     .bucketTiaojiFinishPercent,
-    .bucketCaigouFinishPercent{margin:0;padding:0;display: block;height: 15px;line-height: 15px;}
+    .bucketCaigouFinishPercent{margin:0;padding:0;display: block;height: 15px;line-height: 15px;position: relative;}
 
     .bucketFaliaoFinish{background: #70B517;}
     .bucketTiaojiFinish{background: #EA7854;}
@@ -48,7 +48,13 @@
   <script src="list.js"></script>
   <script>
     $(document).ready(function(){
-      $("#bucket").bucketList();
+      //调用方式1
+      //$("#bucket").bucketList();
+
+      //调用方式2
+      $.getJSON("data.json",function(list){
+        $("#bucket").bucketList(list);
+      })
     })
   </script>
 </body>
